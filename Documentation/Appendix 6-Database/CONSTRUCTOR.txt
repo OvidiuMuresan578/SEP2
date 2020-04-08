@@ -1,0 +1,29 @@
+CREATE TABLE IF NOT EXISTS Cinemas(id SERIAL,location VARCHAR,
+PRIMARY KEY(id));
+
+CREATE TABLE IF NOT EXISTS Auditoriums(id SERIAL,cinema_id SERIAL,
+PRIMARY KEY(id,cinema_id),
+FOREIGN KEY(cinema_id) 
+REFERENCES Cinemas(id));
+
+CREATE TABLE IF NOT EXISTS Movies(id SERIAL,title VARCHAR,length INT,
+PRIMARY KEY (id));
+
+CREATE TABLE IF NOT EXISTS Projections(time TIMESTAMP,auditorium_id SERIAL, cinema_id SERIAL,movie_id SERIAL,
+PRIMARY KEY(time,auditorium_id,cinema_id), 
+FOREIGN KEY (auditorium_id,cinema_id) 
+REFERENCES Auditoriums(id,cinema_id),
+FOREIGN KEY (movie_id)
+REFERENCES Movies(id));
+
+CREATE TABLE IF NOT EXISTS Seats(row INT,col INT,auditorium_id SERIAL,cinema_id SERIAL,occupied BOOLEAN,
+PRIMARY KEY (row,col,auditorium_id,cinema_id), 
+FOREIGN KEY (auditorium_id,cinema_id) 
+REFERENCES Auditoriums(id,cinema_id));
+
+CREATE TABLE IF NOT EXISTS Reservations(time timestamp,auditorium_id INT,cinema_id INT,row INT, col INT, identification VARCHAR,
+PRIMARY KEY (time,auditorium_id,cinema_id,row,col),
+FOREIGN KEY (time,auditorium_id,cinema_id)
+REFERENCES Projections(time,auditorium_id,cinema_id),
+FOREIGN KEY (row,col,auditorium_id,cinema_id) 
+REFERENCES Seats(row,col,auditorium_id,cinema_id));
